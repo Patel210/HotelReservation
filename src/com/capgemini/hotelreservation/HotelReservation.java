@@ -24,8 +24,10 @@ public class HotelReservation {
 	 * @param weekdayRate
 	 * @param weekendRate Add Hotel in the system
 	 */
-	public void addHotelToSystem(String hotelName, int weekdayRate, int weekendrate, int rating, int rewardCusWeekdayRate, int rewardCusWeekendRate) {
-		Hotel hotel = new Hotel(hotelName, weekdayRate, weekendrate, rating, rewardCusWeekdayRate, rewardCusWeekendRate);
+	public void addHotelToSystem(String hotelName, int weekdayRate, int weekendrate, int rating,
+			int rewardCusWeekdayRate, int rewardCusWeekendRate) {
+		Hotel hotel = new Hotel(hotelName, weekdayRate, weekendrate, rating, rewardCusWeekdayRate,
+				rewardCusWeekendRate);
 		availableHotels.put(hotelName, hotel);
 		System.out.println("Hotel added  successfully!");
 	}
@@ -66,11 +68,18 @@ public class HotelReservation {
 	 * @param endDate
 	 * @throws ParseException View the cheapest best rated hotel if present
 	 */
-	public void viewCheapestBestRatedHotel(String startDate, String endDate) throws ParseException {
+	public void viewCheapestBestRatedHotel(String startDate, String endDate, String customerType)
+			throws ParseException {
 		int[] countOfDiffDays = getWeekDaysAndWeekendDays(startDate, endDate);
 		if (availableHotels.size() != 0) {
-			Function<Hotel, Integer> toGetRates = hotel -> Integer.sum(hotel.getWeekdayRate() * countOfDiffDays[0],
-					hotel.getWeekendRate() * countOfDiffDays[1]);
+			Function<Hotel, Integer> toGetRates;
+			if (customerType.equalsIgnoreCase("Regular")) {
+				toGetRates = hotel -> Integer.sum(hotel.getWeekdayRate() * countOfDiffDays[0],
+						hotel.getWeekendRate() * countOfDiffDays[1]);
+			} else {
+				toGetRates = hotel -> Integer.sum(hotel.getRewardCusWeekdayRate() * countOfDiffDays[0],
+						hotel.getRewardCusWeekendRate() * countOfDiffDays[1]);
+			}
 			int cheapestRate = availableHotels.entrySet().stream().map(entry -> toGetRates.apply(entry.getValue()))
 					.min((i, j) -> i.compareTo(j)).orElse(0);
 
@@ -89,7 +98,7 @@ public class HotelReservation {
 			System.out.println("Sorry! No Hotel is available in the system");
 		}
 	}
-	
+
 	/**
 	 * @param startDate
 	 * @param endDate
@@ -106,8 +115,7 @@ public class HotelReservation {
 			availableHotels.entrySet().stream().filter(entry -> toGetRating.apply(entry.getValue()) == maxRating)
 					.forEach(entry -> System.out.println("Best Hotel With highest Rating: " + entry.getKey()
 							+ ", Rating: " + maxRating + " Total rates: $" + toGetRates.apply(entry.getValue())));
-		}
-		else {
+		} else {
 			System.out.println("Sorry! No Hotel is available in the system");
 		}
 	}
