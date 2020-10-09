@@ -89,4 +89,26 @@ public class HotelReservation {
 			System.out.println("Sorry! No Hotel is available in the system");
 		}
 	}
+	
+	/**
+	 * @param startDate
+	 * @param endDate
+	 * @throws ParseException View the best rated hotel if present
+	 */
+	public void viewBestRatedHotel(String startDate, String endDate) throws ParseException {
+		int[] countOfDiffDays = getWeekDaysAndWeekendDays(startDate, endDate);
+		if (availableHotels.size() != 0) {
+			Function<Hotel, Integer> toGetRates = hotel -> Integer.sum(hotel.getWeekdayRate() * countOfDiffDays[0],
+					hotel.getWeekendRate() * countOfDiffDays[1]);
+			Function<Hotel, Integer> toGetRating = hotel -> hotel.getRating();
+			int maxRating = availableHotels.entrySet().stream().map(entry -> toGetRating.apply(entry.getValue()))
+					.max((i, j) -> i.compareTo(j)).get();
+			availableHotels.entrySet().stream().filter(entry -> toGetRating.apply(entry.getValue()) == maxRating)
+					.forEach(entry -> System.out.println("Best Hotel With highest Rating: " + entry.getKey()
+							+ ", Rating: " + maxRating + " Total rates: $" + toGetRates.apply(entry.getValue())));
+		}
+		else {
+			System.out.println("Sorry! No Hotel is available in the system");
+		}
+	}
 }

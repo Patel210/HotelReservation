@@ -19,6 +19,7 @@ public class HotelReservationUtility {
 		String endDate = sc .next();
 		try {
 			hotelReservation.viewCheapestBestRatedHotel(startDate, endDate);
+			hotelReservation.viewBestRatedHotel(startDate, endDate);
 		} catch (ParseException e) {
 			System.out.println("Invalid date format! Correct format: ddMMMyyyy");
 		}
