@@ -2,14 +2,17 @@ package com.capgemini.hotelreservation;
 
 public class Hotel {
 	private String hotelName;
-	private int weekdayRate, weekendRate, rating;
+	private int weekdayRate, weekendRate, rating, rewardCusWeekdayRate, rewardCusWeekendRate;
 
-	public Hotel(String hotelName, int weekdayRate, int weekendRate, int rating) {
+	public Hotel(String hotelName, int weekdayRate, int weekendRate, int rating, int rewardCusWeekdayRate,
+			int rewardCusWeekendRate) {
 		super();
 		this.hotelName = hotelName;
 		this.weekdayRate = weekdayRate;
 		this.weekendRate = weekendRate;
 		this.rating = rating;
+		this.setRewardCusWeekdayRate(rewardCusWeekdayRate);
+		this.setRewardCusWeekendRate(rewardCusWeekendRate);
 	}
 
 	public String getHotelName() {
@@ -42,5 +45,21 @@ public class Hotel {
 
 	public void setRating(int rating) {
 		this.rating = rating;
+	}
+
+	public int getRewardCusWeekdayRate() {
+		return rewardCusWeekdayRate;
+	}
+
+	public void setRewardCusWeekdayRate(int rewardCusWeekdayRate) {
+		this.rewardCusWeekdayRate = rewardCusWeekdayRate;
+	}
+
+	public int getRewardCusWeekendRate() {
+		return rewardCusWeekendRate;
+	}
+
+	public void setRewardCusWeekendRate(int rewardCusWeekendRate) {
+		this.rewardCusWeekendRate = rewardCusWeekendRate;
 	}
 }

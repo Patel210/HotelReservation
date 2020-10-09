@@ -24,8 +24,8 @@ public class HotelReservation {
 	 * @param weekdayRate
 	 * @param weekendRate Add Hotel in the system
 	 */
-	public void addHotelToSystem(String hotelName, Integer weekdayRate, Integer weekendRate, Integer rating) {
-		Hotel hotel = new Hotel(hotelName, weekdayRate, weekendRate, rating);
+	public void addHotelToSystem(String hotelName, int weekdayRate, int weekendrate, int rating, int rewardCusWeekdayRate, int rewardCusWeekendRate) {
+		Hotel hotel = new Hotel(hotelName, weekdayRate, weekendrate, rating, rewardCusWeekdayRate, rewardCusWeekendRate);
 		availableHotels.put(hotelName, hotel);
 		System.out.println("Hotel added  successfully!");
 	}
