@@ -9,7 +9,7 @@ public class Hotel {
 		this.hotelName = hotelName;
 		this.weekdayRate = weekdayRate;
 		this.weekendRate = weekendRate;
-		this.setRating(rating);
+		this.rating = rating;
 	}
 
 	public String getHotelName() {

@@ -9,6 +9,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class HotelReservation {
 
@@ -63,19 +64,27 @@ public class HotelReservation {
 	/**
 	 * @param startDate
 	 * @param endDate
-	 * @throws ParseException View the cheapest hotel if present
+	 * @throws ParseException View the cheapest best rated hotel if present
 	 */
-	public void findCheapestHotel(String startDate, String endDate) throws ParseException {
+	public void viewCheapestBestRatedHotel(String startDate, String endDate) throws ParseException {
 		int[] countOfDiffDays = getWeekDaysAndWeekendDays(startDate, endDate);
-
-		Function<Hotel, Integer> toGetRates = hotel -> Integer.sum(hotel.getWeekdayRate() * countOfDiffDays[0],
-				hotel.getWeekendRate() * countOfDiffDays[1]);
 		if (availableHotels.size() != 0) {
+			Function<Hotel, Integer> toGetRates = hotel -> Integer.sum(hotel.getWeekdayRate() * countOfDiffDays[0],
+					hotel.getWeekendRate() * countOfDiffDays[1]);
 			int cheapestRate = availableHotels.entrySet().stream().map(entry -> toGetRates.apply(entry.getValue()))
-					.min((i, j) -> i.compareTo(j)).get();
-			availableHotels.entrySet().stream().filter(entry -> toGetRates.apply(entry.getValue()) == cheapestRate)
-					.forEach(entry -> System.out
-							.println("Cheapest Hotel: " + entry.getKey() + " Total rates: $" + cheapestRate));
+					.min((i, j) -> i.compareTo(j)).orElse(0);
+
+			Map<String, Hotel> cheapestHotels = availableHotels.entrySet().stream()
+					.filter(entry -> toGetRates.apply(entry.getValue()) == cheapestRate)
+					.collect(Collectors.toMap(stream -> stream.getKey(), stream -> stream.getValue()));
+
+			Function<Hotel, Integer> toGetRating = hotel -> hotel.getRating();
+			int maxRating = cheapestHotels.entrySet().stream().map(entry -> toGetRating.apply(entry.getValue()))
+					.max((i, j) -> i.compareTo(j)).get();
+
+			cheapestHotels.entrySet().stream().filter(entry -> toGetRating.apply(entry.getValue()) == maxRating)
+					.forEach(entry -> System.out.println("Cheapest Hotel With Best Rating: " + entry.getKey()
+							+ ", Rating: " + maxRating + ", Total rates: $" + cheapestRate));
 		} else {
 			System.out.println("Sorry! No Hotel is available in the system");
 		}
