@@ -8,9 +8,9 @@ public class HotelReservationUtility {
 	public static void main(String[] args) {
 		System.out.println("Welcome to Hotel Registration");
 		HotelReservation hotelReservation = new HotelReservation();
-		hotelReservation.addHotelToSystem("Lakewood", 110, 90);
-		hotelReservation.addHotelToSystem("Bridgewood", 150, 50);
-		hotelReservation.addHotelToSystem("Ridgewood", 220, 150);
+		hotelReservation.addHotelToSystem("Lakewood", 110, 90, 3);
+		hotelReservation.addHotelToSystem("Bridgewood", 150, 50, 4);
+		hotelReservation.addHotelToSystem("Ridgewood", 220, 150, 5);
 		
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter the start date(ddMMMyyyy): ");
