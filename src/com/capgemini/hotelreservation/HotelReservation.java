@@ -49,7 +49,7 @@ public class HotelReservation {
 		int noOfDays = (int) ChronoUnit.DAYS.between(startDateOfReservation, endDateOfReservation) + 1;
 		int noOfWeekendDays = 0;
 		for (int i = 0; i < noOfDays; i++) {
-			DayOfWeek day = DayOfWeek.of(tempDate.get(ChronoField.DAY_OF_WEEK));
+			DayOfWeek day = tempDate.getDayOfWeek();
 			switch (day) {
 			case SATURDAY:
 				noOfWeekendDays++;
@@ -64,22 +64,31 @@ public class HotelReservation {
 	}
 
 	/**
+	 * Returns the functional interface to get hotel rates for the period of reservation depending on customer type
+	 */
+	public Function<Hotel, Integer> getToGetRatesFunctionalInterface(String startDate, String endDate,
+			                                                         String customerType) throws ParseException {
+		int[] countOfDiffDays = getWeekDaysAndWeekendDays(startDate, endDate);
+		Function<Hotel, Integer> toGetRates;
+		if (customerType.equalsIgnoreCase("Regular")) {
+			toGetRates = hotel -> Integer.sum(hotel.getWeekdayRate() * countOfDiffDays[0],
+					hotel.getWeekendRate() * countOfDiffDays[1]);
+		} else {
+			toGetRates = hotel -> Integer.sum(hotel.getRewardCusWeekdayRate() * countOfDiffDays[0],
+					hotel.getRewardCusWeekendRate() * countOfDiffDays[1]);
+		}
+		return toGetRates;
+	}
+
+	/**
 	 * @param startDate
 	 * @param endDate
 	 * @throws ParseException View the cheapest best rated hotel if present
 	 */
 	public void viewCheapestBestRatedHotel(String startDate, String endDate, String customerType)
-			throws ParseException {
-		int[] countOfDiffDays = getWeekDaysAndWeekendDays(startDate, endDate);
+			                               throws ParseException {
 		if (availableHotels.size() != 0) {
-			Function<Hotel, Integer> toGetRates;
-			if (customerType.equalsIgnoreCase("Regular")) {
-				toGetRates = hotel -> Integer.sum(hotel.getWeekdayRate() * countOfDiffDays[0],
-						hotel.getWeekendRate() * countOfDiffDays[1]);
-			} else {
-				toGetRates = hotel -> Integer.sum(hotel.getRewardCusWeekdayRate() * countOfDiffDays[0],
-						hotel.getRewardCusWeekendRate() * countOfDiffDays[1]);
-			}
+			Function<Hotel, Integer> toGetRates = getToGetRatesFunctionalInterface(startDate, endDate, customerType);
 			int cheapestRate = availableHotels.entrySet().stream().map(entry -> toGetRates.apply(entry.getValue()))
 					.min((i, j) -> i.compareTo(j)).orElse(0);
 
@@ -106,17 +115,8 @@ public class HotelReservation {
 	 * @throws ParseException View the best rated hotel if present
 	 */
 	public void viewBestRatedHotel(String startDate, String endDate, String customerType) throws ParseException {
-		int[] countOfDiffDays = getWeekDaysAndWeekendDays(startDate, endDate);
 		if (availableHotels.size() != 0) {
-			Function<Hotel, Integer> toGetRates;
-			if (customerType.equalsIgnoreCase("Regular")) {
-				toGetRates = hotel -> Integer.sum(hotel.getWeekdayRate() * countOfDiffDays[0],
-						hotel.getWeekendRate() * countOfDiffDays[1]);
-			} else {
-				toGetRates = hotel -> Integer.sum(hotel.getRewardCusWeekdayRate() * countOfDiffDays[0],
-						hotel.getRewardCusWeekendRate() * countOfDiffDays[1]);
-
-			}
+			Function<Hotel, Integer> toGetRates = getToGetRatesFunctionalInterface(startDate, endDate, customerType);
 			Function<Hotel, Integer> toGetRating = hotel -> hotel.getRating();
 			int maxRating = availableHotels.entrySet().stream().map(entry -> toGetRating.apply(entry.getValue()))
 					.max((i, j) -> i.compareTo(j)).get();
